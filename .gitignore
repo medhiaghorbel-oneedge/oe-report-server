@@ -1,0 +1,17 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.env
+
+# VSCode
+.vscode/
+.history/
+
+# Output files
+*.pdf
+*.log
+
+# System
+.DS_Store

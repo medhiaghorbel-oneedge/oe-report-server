@@ -1,0 +1,1298 @@
+{
+  "id": "report-invoice-001",
+  "name": "Sales Invoice",
+  "width": 595,
+  "height": 842,
+  "margins": { "top": 30, "right": 30, "bottom": 30, "left": 30 },
+
+  "styles": {
+    "heading1": {
+      "fontFamily": "Helvetica-Bold",
+      "fontSize": 22,
+      "bold": true,
+      "color": "#1A1A2E"
+    },
+    "heading2": {
+      "fontFamily": "Helvetica-Bold",
+      "fontSize": 11,
+      "bold": true,
+      "color": "#1A1A2E"
+    },
+    "bodyText": {
+      "fontFamily": "Helvetica",
+      "fontSize": 9,
+      "color": "#333333"
+    },
+    "mutedText": {
+      "fontFamily": "Helvetica",
+      "fontSize": 8,
+      "color": "#888888"
+    },
+    "tableHeader": {
+      "fontFamily": "Helvetica-Bold",
+      "fontSize": 9,
+      "bold": true,
+      "color": "#FFFFFF"
+    },
+    "tableRow": {
+      "fontFamily": "Helvetica",
+      "fontSize": 9,
+      "color": "#222222"
+    },
+    "accentFill": {
+      "fillColor": "#1A1A2E",
+      "borderStyle": "none"
+    },
+    "mutedFill": {
+      "fillColor": "#F5F5F5",
+      "borderStyle": "none"
+    }
+  },
+
+  "data": {
+    "invoice": {
+      "number": "INV-2024-00892",
+      "date": "2024-11-15",
+      "dueDate": "2024-12-15",
+      "status": "Due",
+      "currency": "USD",
+      "subtotal": 4250.0,
+      "taxRate": 0.19,
+      "taxAmount": 807.5,
+      "discount": 200.0,
+      "total": 4857.5,
+      "notes": "Payment is due within 30 days. Please include the invoice number in your payment reference. Thank you for your business.",
+      "paymentTerms": "Net 30"
+    },
+    "company": {
+      "name": "Acme Solutions Inc.",
+      "address": "742 Evergreen Terrace, Suite 200",
+      "city": "Springfield, IL 62701",
+      "phone": "+1 (555) 234-5678",
+      "email": "billing@acmesolutions.com",
+      "website": "www.acmesolutions.com",
+      "taxId": "TAX-ID: 12-3456789",
+      "logoUrl": "https://placehold.co/120x40/1A1A2E/FFFFFF?text=ACME"
+    },
+    "client": {
+      "name": "Bright Future Ltd.",
+      "contact": "Jonathan Reyes",
+      "address": "1600 Pennsylvania Ave NW",
+      "city": "Washington, DC 20500",
+      "email": "j.reyes@brightfuture.com",
+      "phone": "+1 (555) 987-6543"
+    },
+    "lineItems": [
+      {
+        "id": "LI-001",
+        "description": "UI/UX Design — Dashboard Redesign",
+        "quantity": 1,
+        "unit": "project",
+        "unitPrice": 1500.0,
+        "total": 1500.0
+      },
+      {
+        "id": "LI-002",
+        "description": "Frontend Development — Angular Components (Phase 1)",
+        "quantity": 40,
+        "unit": "hrs",
+        "unitPrice": 85.0,
+        "total": 3400.0
+      },
+      {
+        "id": "LI-003",
+        "description": "Code Review & QA Testing",
+        "quantity": 8,
+        "unit": "hrs",
+        "unitPrice": 65.0,
+        "total": 520.0
+      },
+      {
+        "id": "LI-004",
+        "description": "Project Management & Communication",
+        "quantity": 6,
+        "unit": "hrs",
+        "unitPrice": 55.0,
+        "total": 330.0
+      },
+      {
+        "id": "LI-005",
+        "description": "Early Payment Discount",
+        "quantity": 1,
+        "unit": "flat",
+        "unitPrice": -200.0,
+        "total": -200.0
+      }
+    ],
+    "summary": {
+      "totalProjects": 1,
+      "totalHours": 54,
+      "totalLineItems": 5
+    }
+  },
+
+  "bands": [
+    {
+      "id": "band-title-0",
+      "type": "title",
+      "height": 110,
+      "printWhen": "once",
+      "dataKey": null,
+      "elements": [
+        {
+          "id": "el-title-bg",
+          "type": "rectangle",
+          "bandId": "band-title-0",
+          "x": 0,
+          "y": 0,
+          "width": 535,
+          "height": 110,
+          "locked": false,
+          "radius": 0,
+          "style": {
+            "borderStyle": "none",
+            "borderWidth": 0,
+            "borderColor": "transparent",
+            "fillColor": "#1A1A2E",
+            "opacity": 1
+          }
+        },
+
+        {
+          "id": "el-logo",
+          "type": "image",
+          "bandId": "band-title-0",
+          "x": 20,
+          "y": 30,
+          "width": 120,
+          "height": 40,
+          "locked": false,
+          "style": {
+            "borderStyle": "none",
+            "borderWidth": 0,
+            "borderColor": "transparent",
+            "fillColor": "transparent",
+            "opacity": 1
+          },
+          "src": "company.logoUrl",
+          "fit": "contain",
+          "altText": "Company Logo"
+        },
+
+        {
+          "id": "el-title-label",
+          "type": "staticText",
+          "bandId": "band-title-0",
+          "x": 330,
+          "y": 20,
+          "width": 185,
+          "height": 36,
+          "locked": false,
+          "style": {
+            "borderStyle": "none",
+            "borderWidth": 0,
+            "borderColor": "transparent",
+            "fillColor": "transparent",
+            "opacity": 1
+          },
+          "text": "INVOICE",
+          "textStyle": {
+            "fontFamily": "Helvetica-Bold",
+            "fontSize": 28,
+            "bold": true,
+            "italic": false,
+            "underline": false,
+            "hAlign": "right",
+            "vAlign": "middle",
+            "color": "#FFFFFF",
+            "lineHeight": 1
+          }
+        },
+
+        {
+          "id": "el-invoice-number",
+          "type": "field",
+          "bandId": "band-title-0",
+          "x": 330,
+          "y": 60,
+          "width": 185,
+          "height": 18,
+          "locked": false,
+          "style": {
+            "borderStyle": "none",
+            "borderWidth": 0,
+            "borderColor": "transparent",
+            "fillColor": "transparent",
+            "opacity": 1
+          },
+          "fieldName": "invoice.number",
+          "format": "text",
+          "nullText": "—",
+          "textStyle": {
+            "fontFamily": "Helvetica",
+            "fontSize": 10,
+            "bold": false,
+            "italic": false,
+            "underline": false,
+            "hAlign": "right",
+            "vAlign": "middle",
+            "color": "#AAAACC",
+            "lineHeight": 1.2
+          }
+        },
+
+        {
+          "id": "el-company-name",
+          "type": "field",
+          "bandId": "band-title-0",
+          "x": 20,
+          "y": 78,
+          "width": 250,
+          "height": 16,
+          "locked": false,
+          "style": {
+            "borderStyle": "none",
+            "borderWidth": 0,
+            "borderColor": "transparent",
+            "fillColor": "transparent",
+            "opacity": 1
+          },
+          "fieldName": "company.name",
+          "format": "text",
+          "nullText": "",
+          "textStyle": {
+            "fontFamily": "Helvetica-Bold",
+            "fontSize": 10,
+            "bold": true,
+            "italic": false,
+            "underline": false,
+            "hAlign": "left",
+            "vAlign": "middle",
+            "color": "#FFFFFF",
+            "lineHeight": 1.2
+          }
+        },
+
+        {
+          "id": "el-company-email",
+          "type": "field",
+          "bandId": "band-title-0",
+          "x": 20,
+          "y": 94,
+          "width": 250,
+          "height": 14,
+          "locked": false,
+          "style": {
+            "borderStyle": "none",
+            "borderWidth": 0,
+            "borderColor": "transparent",
+            "fillColor": "transparent",
+            "opacity": 1
+          },
+          "fieldName": "company.email",
+          "format": "text",
+          "nullText": "",
+          "textStyle": {
+            "fontFamily": "Helvetica",
+            "fontSize": 8,
+            "bold": false,
+            "italic": false,
+            "underline": false,
+            "hAlign": "left",
+            "vAlign": "middle",
+            "color": "#AAAACC",
+            "lineHeight": 1.2
+          }
+        }
+      ]
+    },
+
+    {
+      "id": "band-pageHeader-1",
+      "type": "pageHeader",
+      "height": 10,
+      "printWhen": "perPage",
+      "dataKey": null,
+      "elements": []
+    },
+
+    {
+      "id": "band-columnHeader-2",
+      "type": "columnHeader",
+      "height": 100,
+      "printWhen": "perPage",
+      "dataKey": null,
+      "elements": [
+        {
+          "id": "el-bill-to-label",
+          "type": "staticText",
+          "bandId": "band-columnHeader-2",
+          "x": 0,
+          "y": 0,
+          "width": 120,
+          "height": 14,
+          "locked": false,
+          "style": {
+            "borderStyle": "none",
+            "borderWidth": 0,
+            "borderColor": "transparent",
+            "fillColor": "transparent",
+            "opacity": 1
+          },
+          "text": "BILL TO",
+          "textStyle": {
+            "fontFamily": "Helvetica-Bold",
+            "fontSize": 8,
+            "bold": true,
+            "italic": false,
+            "underline": false,
+            "hAlign": "left",
+            "vAlign": "middle",
+            "color": "#888888",
+            "lineHeight": 1.2
+          }
+        },
+
+        {
+          "id": "el-client-name",
+          "type": "field",
+          "bandId": "band-columnHeader-2",
+          "x": 0,
+          "y": 16,
+          "width": 220,
+          "height": 18,
+          "locked": false,
+          "style": {
+            "borderStyle": "none",
+            "borderWidth": 0,
+            "borderColor": "transparent",
+            "fillColor": "transparent",
+            "opacity": 1
+          },
+          "fieldName": "client.name",
+          "format": "text",
+          "nullText": "—",
+          "textStyle": {
+            "fontFamily": "Helvetica-Bold",
+            "fontSize": 12,
+            "bold": true,
+            "italic": false,
+            "underline": false,
+            "hAlign": "left",
+            "vAlign": "middle",
+            "color": "#1A1A2E",
+            "lineHeight": 1.2
+          }
+        },
+
+        {
+          "id": "el-client-contact",
+          "type": "field",
+          "bandId": "band-columnHeader-2",
+          "x": 0,
+          "y": 36,
+          "width": 220,
+          "height": 14,
+          "locked": false,
+          "style": {
+            "borderStyle": "none",
+            "borderWidth": 0,
+            "borderColor": "transparent",
+            "fillColor": "transparent",
+            "opacity": 1
+          },
+          "fieldName": "client.contact",
+          "format": "text",
+          "nullText": "",
+          "textStyle": {
+            "fontFamily": "Helvetica",
+            "fontSize": 9,
+            "bold": false,
+            "italic": false,
+            "underline": false,
+            "hAlign": "left",
+            "vAlign": "middle",
+            "color": "#555555",
+            "lineHeight": 1.2
+          }
+        },
+
+        {
+          "id": "el-client-address",
+          "type": "field",
+          "bandId": "band-columnHeader-2",
+          "x": 0,
+          "y": 52,
+          "width": 220,
+          "height": 14,
+          "locked": false,
+          "style": {
+            "borderStyle": "none",
+            "borderWidth": 0,
+            "borderColor": "transparent",
+            "fillColor": "transparent",
+            "opacity": 1
+          },
+          "fieldName": "client.address",
+          "format": "text",
+          "nullText": "",
+          "textStyle": {
+            "fontFamily": "Helvetica",
+            "fontSize": 9,
+            "bold": false,
+            "italic": false,
+            "underline": false,
+            "hAlign": "left",
+            "vAlign": "middle",
+            "color": "#555555",
+            "lineHeight": 1.2
+          }
+        },
+
+        {
+          "id": "el-client-city",
+          "type": "field",
+          "bandId": "band-columnHeader-2",
+          "x": 0,
+          "y": 67,
+          "width": 220,
+          "height": 14,
+          "locked": false,
+          "style": {
+            "borderStyle": "none",
+            "borderWidth": 0,
+            "borderColor": "transparent",
+            "fillColor": "transparent",
+            "opacity": 1
+          },
+          "fieldName": "client.city",
+          "format": "text",
+          "nullText": "",
+          "textStyle": {
+            "fontFamily": "Helvetica",
+            "fontSize": 9,
+            "bold": false,
+            "italic": false,
+            "underline": false,
+            "hAlign": "left",
+            "vAlign": "middle",
+            "color": "#555555",
+            "lineHeight": 1.2
+          }
+        },
+
+        {
+          "id": "el-date-label",
+          "type": "staticText",
+          "bandId": "band-columnHeader-2",
+          "x": 330,
+          "y": 0,
+          "width": 90,
+          "height": 14,
+          "locked": false,
+          "style": {
+            "borderStyle": "none",
+            "borderWidth": 0,
+            "borderColor": "transparent",
+            "fillColor": "transparent",
+            "opacity": 1
+          },
+          "text": "INVOICE DATE",
+          "textStyle": {
+            "fontFamily": "Helvetica-Bold",
+            "fontSize": 8,
+            "bold": true,
+            "italic": false,
+            "underline": false,
+            "hAlign": "left",
+            "vAlign": "middle",
+            "color": "#888888",
+            "lineHeight": 1.2
+          }
+        },
+
+        {
+          "id": "el-invoice-date",
+          "type": "field",
+          "bandId": "band-columnHeader-2",
+          "x": 330,
+          "y": 16,
+          "width": 90,
+          "height": 16,
+          "locked": false,
+          "style": {
+            "borderStyle": "none",
+            "borderWidth": 0,
+            "borderColor": "transparent",
+            "fillColor": "transparent",
+            "opacity": 1
+          },
+          "fieldName": "invoice.date",
+          "format": "date",
+          "pattern": "dd/MM/yyyy",
+          "nullText": "—",
+          "textStyle": {
+            "fontFamily": "Helvetica",
+            "fontSize": 10,
+            "bold": false,
+            "italic": false,
+            "underline": false,
+            "hAlign": "left",
+            "vAlign": "middle",
+            "color": "#222222",
+            "lineHeight": 1.2
+          }
+        },
+
+        {
+          "id": "el-due-label",
+          "type": "staticText",
+          "bandId": "band-columnHeader-2",
+          "x": 440,
+          "y": 0,
+          "width": 95,
+          "height": 14,
+          "locked": false,
+          "style": {
+            "borderStyle": "none",
+            "borderWidth": 0,
+            "borderColor": "transparent",
+            "fillColor": "transparent",
+            "opacity": 1
+          },
+          "text": "DUE DATE",
+          "textStyle": {
+            "fontFamily": "Helvetica-Bold",
+            "fontSize": 8,
+            "bold": true,
+            "italic": false,
+            "underline": false,
+            "hAlign": "left",
+            "vAlign": "middle",
+            "color": "#888888",
+            "lineHeight": 1.2
+          }
+        },
+
+        {
+          "id": "el-due-date",
+          "type": "field",
+          "bandId": "band-columnHeader-2",
+          "x": 440,
+          "y": 16,
+          "width": 95,
+          "height": 16,
+          "locked": false,
+          "style": {
+            "borderStyle": "none",
+            "borderWidth": 0,
+            "borderColor": "transparent",
+            "fillColor": "transparent",
+            "opacity": 1
+          },
+          "fieldName": "invoice.dueDate",
+          "format": "date",
+          "pattern": "dd/MM/yyyy",
+          "nullText": "—",
+          "textStyle": {
+            "fontFamily": "Helvetica",
+            "fontSize": 10,
+            "bold": false,
+            "italic": false,
+            "underline": false,
+            "hAlign": "left",
+            "vAlign": "middle",
+            "color": "#222222",
+            "lineHeight": 1.2
+          }
+        },
+
+        {
+          "id": "el-divider-ch",
+          "type": "line",
+          "bandId": "band-columnHeader-2",
+          "x": 0,
+          "y": 95,
+          "width": 535,
+          "height": 1,
+          "locked": false,
+          "direction": "horizontal",
+          "style": {
+            "borderStyle": "solid",
+            "borderWidth": 1,
+            "borderColor": "#E0E0E0",
+            "fillColor": "transparent",
+            "opacity": 1
+          }
+        }
+      ]
+    },
+
+    {
+      "id": "band-detail-3",
+      "type": "detail",
+      "height": 220,
+      "printWhen": "always",
+      "dataKey": "lineItems",
+      "elements": [
+        {
+          "id": "el-line-items-table",
+          "type": "table",
+          "bandId": "band-detail-3",
+          "x": 0,
+          "y": 10,
+          "width": 535,
+          "height": 200,
+          "locked": false,
+          "style": {
+            "borderStyle": "none",
+            "borderWidth": 0,
+            "borderColor": "transparent",
+            "fillColor": "transparent",
+            "opacity": 1
+          },
+          "dataField": "lineItems",
+          "showHeader": true,
+          "headerHeight": 26,
+          "rowHeight": 24,
+          "altRowColor": "#F9F9FB",
+          "columns": [
+            {
+              "key": "description",
+              "label": "Description",
+              "width": 245,
+              "align": "left",
+              "format": "text"
+            },
+            {
+              "key": "quantity",
+              "label": "Qty",
+              "width": 55,
+              "align": "center",
+              "format": "number",
+              "pattern": "#,##0.##"
+            },
+            {
+              "key": "unit",
+              "label": "Unit",
+              "width": 55,
+              "align": "center",
+              "format": "text"
+            },
+            {
+              "key": "unitPrice",
+              "label": "Unit Price",
+              "width": 90,
+              "align": "right",
+              "format": "currency",
+              "pattern": "$#,##0.00"
+            },
+            {
+              "key": "total",
+              "label": "Total",
+              "width": 90,
+              "align": "right",
+              "format": "currency",
+              "pattern": "$#,##0.00"
+            }
+          ],
+          "headerStyle": {
+            "fontFamily": "Helvetica-Bold",
+            "fontSize": 9,
+            "bold": true,
+            "italic": false,
+            "underline": false,
+            "hAlign": "left",
+            "vAlign": "middle",
+            "color": "#FFFFFF",
+            "lineHeight": 1.2
+          },
+          "rowStyle": {
+            "fontFamily": "Helvetica",
+            "fontSize": 9,
+            "bold": false,
+            "italic": false,
+            "underline": false,
+            "hAlign": "left",
+            "vAlign": "middle",
+            "color": "#222222",
+            "lineHeight": 1.2
+          }
+        }
+      ]
+    },
+
+    {
+      "id": "band-columnFooter-4",
+      "type": "columnFooter",
+      "height": 130,
+      "printWhen": "perPage",
+      "dataKey": null,
+      "elements": [
+        {
+          "id": "el-totals-bg",
+          "type": "rectangle",
+          "bandId": "band-columnFooter-4",
+          "x": 300,
+          "y": 10,
+          "width": 235,
+          "height": 112,
+          "locked": false,
+          "radius": 6,
+          "style": {
+            "borderStyle": "solid",
+            "borderWidth": 1,
+            "borderColor": "#E8E8EE",
+            "fillColor": "#F8F8FC",
+            "opacity": 1
+          }
+        },
+
+        {
+          "id": "el-subtotal-label",
+          "type": "staticText",
+          "bandId": "band-columnFooter-4",
+          "x": 310,
+          "y": 20,
+          "width": 120,
+          "height": 18,
+          "locked": false,
+          "style": {
+            "borderStyle": "none",
+            "borderWidth": 0,
+            "borderColor": "transparent",
+            "fillColor": "transparent",
+            "opacity": 1
+          },
+          "text": "Subtotal",
+          "textStyle": {
+            "fontFamily": "Helvetica",
+            "fontSize": 9,
+            "bold": false,
+            "italic": false,
+            "underline": false,
+            "hAlign": "left",
+            "vAlign": "middle",
+            "color": "#555555",
+            "lineHeight": 1.2
+          }
+        },
+
+        {
+          "id": "el-subtotal-value",
+          "type": "field",
+          "bandId": "band-columnFooter-4",
+          "x": 380,
+          "y": 20,
+          "width": 145,
+          "height": 18,
+          "locked": false,
+          "style": {
+            "borderStyle": "none",
+            "borderWidth": 0,
+            "borderColor": "transparent",
+            "fillColor": "transparent",
+            "opacity": 1
+          },
+          "fieldName": "invoice.subtotal",
+          "format": "currency",
+          "pattern": "$#,##0.00",
+          "nullText": "—",
+          "textStyle": {
+            "fontFamily": "Helvetica",
+            "fontSize": 9,
+            "bold": false,
+            "italic": false,
+            "underline": false,
+            "hAlign": "right",
+            "vAlign": "middle",
+            "color": "#222222",
+            "lineHeight": 1.2
+          }
+        },
+
+        {
+          "id": "el-discount-label",
+          "type": "staticText",
+          "bandId": "band-columnFooter-4",
+          "x": 310,
+          "y": 42,
+          "width": 120,
+          "height": 18,
+          "locked": false,
+          "style": {
+            "borderStyle": "none",
+            "borderWidth": 0,
+            "borderColor": "transparent",
+            "fillColor": "transparent",
+            "opacity": 1
+          },
+          "text": "Discount",
+          "textStyle": {
+            "fontFamily": "Helvetica",
+            "fontSize": 9,
+            "bold": false,
+            "italic": false,
+            "underline": false,
+            "hAlign": "left",
+            "vAlign": "middle",
+            "color": "#555555",
+            "lineHeight": 1.2
+          }
+        },
+
+        {
+          "id": "el-discount-value",
+          "type": "field",
+          "bandId": "band-columnFooter-4",
+          "x": 380,
+          "y": 42,
+          "width": 145,
+          "height": 18,
+          "locked": false,
+          "style": {
+            "borderStyle": "none",
+            "borderWidth": 0,
+            "borderColor": "transparent",
+            "fillColor": "transparent",
+            "opacity": 1
+          },
+          "fieldName": "invoice.discount",
+          "format": "currency",
+          "pattern": "-$#,##0.00",
+          "nullText": "—",
+          "textStyle": {
+            "fontFamily": "Helvetica",
+            "fontSize": 9,
+            "bold": false,
+            "italic": false,
+            "underline": false,
+            "hAlign": "right",
+            "vAlign": "middle",
+            "color": "#CC4444",
+            "lineHeight": 1.2
+          }
+        },
+
+        {
+          "id": "el-tax-label",
+          "type": "staticText",
+          "bandId": "band-columnFooter-4",
+          "x": 310,
+          "y": 64,
+          "width": 120,
+          "height": 18,
+          "locked": false,
+          "style": {
+            "borderStyle": "none",
+            "borderWidth": 0,
+            "borderColor": "transparent",
+            "fillColor": "transparent",
+            "opacity": 1
+          },
+          "text": "Tax (19%)",
+          "textStyle": {
+            "fontFamily": "Helvetica",
+            "fontSize": 9,
+            "bold": false,
+            "italic": false,
+            "underline": false,
+            "hAlign": "left",
+            "vAlign": "middle",
+            "color": "#555555",
+            "lineHeight": 1.2
+          }
+        },
+
+        {
+          "id": "el-tax-value",
+          "type": "field",
+          "bandId": "band-columnFooter-4",
+          "x": 380,
+          "y": 64,
+          "width": 145,
+          "height": 18,
+          "locked": false,
+          "style": {
+            "borderStyle": "none",
+            "borderWidth": 0,
+            "borderColor": "transparent",
+            "fillColor": "transparent",
+            "opacity": 1
+          },
+          "fieldName": "invoice.taxAmount",
+          "format": "currency",
+          "pattern": "$#,##0.00",
+          "nullText": "—",
+          "textStyle": {
+            "fontFamily": "Helvetica",
+            "fontSize": 9,
+            "bold": false,
+            "italic": false,
+            "underline": false,
+            "hAlign": "right",
+            "vAlign": "middle",
+            "color": "#222222",
+            "lineHeight": 1.2
+          }
+        },
+
+        {
+          "id": "el-total-divider",
+          "type": "line",
+          "bandId": "band-columnFooter-4",
+          "x": 310,
+          "y": 88,
+          "width": 215,
+          "height": 1,
+          "locked": false,
+          "direction": "horizontal",
+          "style": {
+            "borderStyle": "solid",
+            "borderWidth": 1,
+            "borderColor": "#CCCCDD",
+            "fillColor": "transparent",
+            "opacity": 1
+          }
+        },
+
+        {
+          "id": "el-total-label",
+          "type": "staticText",
+          "bandId": "band-columnFooter-4",
+          "x": 310,
+          "y": 94,
+          "width": 120,
+          "height": 22,
+          "locked": false,
+          "style": {
+            "borderStyle": "none",
+            "borderWidth": 0,
+            "borderColor": "transparent",
+            "fillColor": "transparent",
+            "opacity": 1
+          },
+          "text": "TOTAL DUE",
+          "textStyle": {
+            "fontFamily": "Helvetica-Bold",
+            "fontSize": 11,
+            "bold": true,
+            "italic": false,
+            "underline": false,
+            "hAlign": "left",
+            "vAlign": "middle",
+            "color": "#1A1A2E",
+            "lineHeight": 1.2
+          }
+        },
+
+        {
+          "id": "el-total-value",
+          "type": "field",
+          "bandId": "band-columnFooter-4",
+          "x": 380,
+          "y": 94,
+          "width": 145,
+          "height": 22,
+          "locked": false,
+          "style": {
+            "borderStyle": "none",
+            "borderWidth": 0,
+            "borderColor": "transparent",
+            "fillColor": "transparent",
+            "opacity": 1
+          },
+          "fieldName": "invoice.total",
+          "format": "currency",
+          "pattern": "$#,##0.00",
+          "nullText": "—",
+          "textStyle": {
+            "fontFamily": "Helvetica-Bold",
+            "fontSize": 13,
+            "bold": true,
+            "italic": false,
+            "underline": false,
+            "hAlign": "right",
+            "vAlign": "middle",
+            "color": "#1A1A2E",
+            "lineHeight": 1.2
+          }
+        },
+
+        {
+          "id": "el-notes-label",
+          "type": "staticText",
+          "bandId": "band-columnFooter-4",
+          "x": 0,
+          "y": 10,
+          "width": 80,
+          "height": 14,
+          "locked": false,
+          "style": {
+            "borderStyle": "none",
+            "borderWidth": 0,
+            "borderColor": "transparent",
+            "fillColor": "transparent",
+            "opacity": 1
+          },
+          "text": "NOTES",
+          "textStyle": {
+            "fontFamily": "Helvetica-Bold",
+            "fontSize": 8,
+            "bold": true,
+            "italic": false,
+            "underline": false,
+            "hAlign": "left",
+            "vAlign": "middle",
+            "color": "#888888",
+            "lineHeight": 1.2
+          }
+        },
+
+        {
+          "id": "el-notes-value",
+          "type": "field",
+          "bandId": "band-columnFooter-4",
+          "x": 0,
+          "y": 26,
+          "width": 270,
+          "height": 60,
+          "locked": false,
+          "style": {
+            "borderStyle": "none",
+            "borderWidth": 0,
+            "borderColor": "transparent",
+            "fillColor": "transparent",
+            "opacity": 1
+          },
+          "fieldName": "invoice.notes",
+          "format": "text",
+          "nullText": "",
+          "textStyle": {
+            "fontFamily": "Helvetica",
+            "fontSize": 8,
+            "bold": false,
+            "italic": false,
+            "underline": false,
+            "hAlign": "left",
+            "vAlign": "top",
+            "color": "#777777",
+            "lineHeight": 1.5
+          }
+        }
+      ]
+    },
+
+    {
+      "id": "band-pageFooter-5",
+      "type": "pageFooter",
+      "height": 34,
+      "printWhen": "perPage",
+      "dataKey": null,
+      "elements": [
+        {
+          "id": "el-footer-line",
+          "type": "line",
+          "bandId": "band-pageFooter-5",
+          "x": 0,
+          "y": 0,
+          "width": 535,
+          "height": 1,
+          "locked": false,
+          "direction": "horizontal",
+          "style": {
+            "borderStyle": "solid",
+            "borderWidth": 1,
+            "borderColor": "#E0E0E0",
+            "fillColor": "transparent",
+            "opacity": 1
+          }
+        },
+
+        {
+          "id": "el-footer-company",
+          "type": "field",
+          "bandId": "band-pageFooter-5",
+          "x": 0,
+          "y": 8,
+          "width": 250,
+          "height": 14,
+          "locked": false,
+          "style": {
+            "borderStyle": "none",
+            "borderWidth": 0,
+            "borderColor": "transparent",
+            "fillColor": "transparent",
+            "opacity": 1
+          },
+          "fieldName": "company.website",
+          "format": "text",
+          "nullText": "",
+          "textStyle": {
+            "fontFamily": "Helvetica",
+            "fontSize": 8,
+            "bold": false,
+            "italic": false,
+            "underline": false,
+            "hAlign": "left",
+            "vAlign": "middle",
+            "color": "#888888",
+            "lineHeight": 1.2
+          }
+        },
+
+        {
+          "id": "el-footer-taxid",
+          "type": "field",
+          "bandId": "band-pageFooter-5",
+          "x": 0,
+          "y": 20,
+          "width": 250,
+          "height": 12,
+          "locked": false,
+          "style": {
+            "borderStyle": "none",
+            "borderWidth": 0,
+            "borderColor": "transparent",
+            "fillColor": "transparent",
+            "opacity": 1
+          },
+          "fieldName": "company.taxId",
+          "format": "text",
+          "nullText": "",
+          "textStyle": {
+            "fontFamily": "Helvetica",
+            "fontSize": 7,
+            "bold": false,
+            "italic": false,
+            "underline": false,
+            "hAlign": "left",
+            "vAlign": "middle",
+            "color": "#AAAAAA",
+            "lineHeight": 1.2
+          }
+        },
+
+        {
+          "id": "el-page-number",
+          "type": "staticText",
+          "bandId": "band-pageFooter-5",
+          "x": 400,
+          "y": 8,
+          "width": 135,
+          "height": 14,
+          "locked": false,
+          "style": {
+            "borderStyle": "none",
+            "borderWidth": 0,
+            "borderColor": "transparent",
+            "fillColor": "transparent",
+            "opacity": 1
+          },
+          "text": "Page 1 of 1",
+          "textStyle": {
+            "fontFamily": "Helvetica",
+            "fontSize": 8,
+            "bold": false,
+            "italic": false,
+            "underline": false,
+            "hAlign": "right",
+            "vAlign": "middle",
+            "color": "#888888",
+            "lineHeight": 1.2
+          }
+        }
+      ]
+    },
+
+    {
+      "id": "band-summary-6",
+      "type": "summary",
+      "height": 80,
+      "printWhen": "once",
+      "dataKey": null,
+      "elements": [
+        {
+          "id": "el-summary-bg",
+          "type": "rectangle",
+          "bandId": "band-summary-6",
+          "x": 0,
+          "y": 10,
+          "width": 535,
+          "height": 60,
+          "locked": false,
+          "radius": 6,
+          "style": {
+            "borderStyle": "solid",
+            "borderWidth": 1,
+            "borderColor": "#1A1A2E",
+            "fillColor": "#1A1A2E",
+            "opacity": 1
+          }
+        },
+
+        {
+          "id": "el-thank-you",
+          "type": "staticText",
+          "bandId": "band-summary-6",
+          "x": 20,
+          "y": 10,
+          "width": 300,
+          "height": 60,
+          "locked": false,
+          "style": {
+            "borderStyle": "none",
+            "borderWidth": 0,
+            "borderColor": "transparent",
+            "fillColor": "transparent",
+            "opacity": 1
+          },
+          "text": "Thank you for your business!",
+          "textStyle": {
+            "fontFamily": "Helvetica-Bold",
+            "fontSize": 13,
+            "bold": true,
+            "italic": false,
+            "underline": false,
+            "hAlign": "left",
+            "vAlign": "middle",
+            "color": "#FFFFFF",
+            "lineHeight": 1.2
+          }
+        },
+
+        {
+          "id": "el-payment-terms",
+          "type": "field",
+          "bandId": "band-summary-6",
+          "x": 350,
+          "y": 10,
+          "width": 165,
+          "height": 60,
+          "locked": false,
+          "style": {
+            "borderStyle": "none",
+            "borderWidth": 0,
+            "borderColor": "transparent",
+            "fillColor": "transparent",
+            "opacity": 1
+          },
+          "fieldName": "invoice.paymentTerms",
+          "format": "text",
+          "nullText": "",
+          "textStyle": {
+            "fontFamily": "Helvetica",
+            "fontSize": 9,
+            "bold": false,
+            "italic": false,
+            "underline": false,
+            "hAlign": "right",
+            "vAlign": "middle",
+            "color": "#AAAACC",
+            "lineHeight": 1.2
+          }
+        }
+      ]
+    }
+  ]
+}
