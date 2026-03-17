@@ -39,6 +39,9 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "rest_framework",
     "apps.core",
+    "apps.users",
+    "apps.reports",
+    "apps.renderer",
 ]
 
 REST_FRAMEWORK = {
