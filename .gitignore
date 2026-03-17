@@ -13,5 +13,7 @@ __pycache__/
 *.pdf
 *.log
 
+*.sqlite3
+
 # System
 .DS_Store
