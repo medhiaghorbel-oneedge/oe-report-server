@@ -1,8 +1,10 @@
-# report_engine/models/report_models.py
-# Pydantic models — mirror of frontend report.models.ts (v2.0)
+# engine/models/report_models.py
+# Pydantic mirror of frontend report.models.ts (Phase 8.0 aligned).
 # Every field name, type, and optional matches the TypeScript source exactly.
+# v3.0 — Phase 8.0 model alignment.
 
 from __future__ import annotations
+
 from typing import Any, Literal, Optional, Union, Type
 from pydantic import BaseModel, Field
 
@@ -21,6 +23,12 @@ class BaseElementStyle(BaseModel):
 
 
 class TextStyle(BaseModel):
+    """
+    Shared text/font style used by StaticTextElement, FieldElement,
+    and TableElement header/row styles.
+    Matches TypeScript TextStyle exactly.
+    """
+
     fontFamily: str = "Helvetica"
     fontSize: float = 12
     bold: bool = False
@@ -80,8 +88,13 @@ class LineElement(BaseElement):
 
 
 class FieldElement(BaseElement):
+    """
+    Data-bound field — renders a resolved value from report.data at PDF time.
+    Replaces the old PlaceholderElement. Frontend type: 'field'.
+    """
+
     type: Literal["field"]
-    fieldName: str
+    fieldName: str  # dot-notation path: "invoice.total"
     format: FieldFormat = "text"
     pattern: Optional[str] = None
     nullText: Optional[str] = "—"
@@ -89,6 +102,8 @@ class FieldElement(BaseElement):
 
 
 class ImageElement(BaseElement):
+    """Image element — renders a URL, data-path string, or base64 image."""
+
     type: Literal["image"]
     src: str
     fit: Literal["fill", "contain", "cover"] = "contain"
@@ -101,6 +116,14 @@ class ImageElement(BaseElement):
 
 
 class TableColumn(BaseModel):
+    """
+    One column in a TableElement.
+    `key`     — flat key into each row object (e.g. "description", "total")
+    `label`   — column header text shown in the PDF
+    `format`  — how cell values are formatted
+    `pattern` — optional format pattern (e.g. "$#,##0.00")
+    """
+
     key: str
     label: str
     width: float
@@ -112,13 +135,23 @@ class TableColumn(BaseModel):
 class TableElement(BaseElement):
     type: Literal["table"]
     columns: list[TableColumn]
+    headerHeight: float = 28
+    rowHeight: float = 24
+    # Full TextStyle for header and data cells
     headerStyle: TextStyle = Field(default_factory=TextStyle)
     rowStyle: TextStyle = Field(default_factory=TextStyle)
-    rowHeight: float = 24
-    headerHeight: float = 26
-    altRowColor: Optional[str] = None
-    showHeader: bool = True
+    # Background colours (separate from TextStyle — TextStyle has no background)
+    headerBackground: str = "#2E6DA4"
+    rowBackground: str = "transparent"
+    altRowBackground: Optional[str] = None
+    # Which key in report.data holds the array of row objects
     dataField: str
+    # Border settings — controlled by the designer
+    showBorder: bool = True
+    borderColor: str = "#CCCCCC"
+    borderWidth: float = 1
+    # Legacy field kept for backwards compatibility with old payloads
+    showHeader: bool = True
 
 
 # ─────────────────────────────────────────────
@@ -148,7 +181,8 @@ BandType = Literal[
     "pageFooter",
     "summary",
 ]
-BandPrintWhen = Literal["always", "once", "perPage"]
+
+PrintWhen = Literal["always", "once", "perPage"]
 
 
 class ReportBand(BaseModel):
@@ -156,8 +190,10 @@ class ReportBand(BaseModel):
     type: BandType
     height: float
     elements: list[ReportElement] = Field(default_factory=list)
+    # Which key in report.data this band iterates (detail band repetition)
     dataKey: Optional[str] = None
-    printWhen: Optional[BandPrintWhen] = None
+    # When to print this band
+    printWhen: Optional[PrintWhen] = None
 
     model_config = {"arbitrary_types_allowed": True}
 
@@ -186,8 +222,11 @@ class ReportModel(BaseModel):
     height: float = 842
     margins: ReportMargins = Field(default_factory=ReportMargins)
     bands: list[ReportBand] = Field(default_factory=list)
+    # Runtime data injected at PDF export time — not stored with the design
     data: Optional[dict[str, Any]] = None
+    # Named style presets — reserved, not used by the renderer yet
     styles: Optional[dict[str, Any]] = None
+    # isDirty is a frontend-only flag; ignored by the engine if present
     isDirty: bool = False
 
     model_config = {"arbitrary_types_allowed": True}
@@ -195,10 +234,9 @@ class ReportModel(BaseModel):
 
 # ─────────────────────────────────────────────
 # DISCRIMINATOR HELPER
-# Used by Pydantic to route each element dict to the right class
 # ─────────────────────────────────────────────
 
-_ELEMENT_MAP: dict[str, Type[ReportElement]] = {
+_ELEMENT_MAP: dict[str, Type[BaseElement]] = {
     "staticText": StaticTextElement,
     "rectangle": RectangleElement,
     "line": LineElement,
@@ -210,29 +248,28 @@ _ELEMENT_MAP: dict[str, Type[ReportElement]] = {
 
 def parse_element(data: dict[str, Any]) -> ReportElement:
     """Deserialise a raw element dict into the correct typed model."""
-
     el_type = data.get("type")
-
     if not isinstance(el_type, str):
         raise ValueError("Element missing 'type'")
-
     cls = _ELEMENT_MAP.get(el_type)
-
     if cls is None:
         raise ValueError(f"Unknown element type: '{el_type}'")
-
     return cls(**data)
 
 
-def parse_report(data: dict) -> ReportModel:
+def parse_report(data: dict[str, Any]) -> ReportModel:
     """
-    Full deserialization entry point.
+    Full deserialisation entry point.
     Handles the discriminated union for elements inside each band.
+    Pops 'bands' before constructing ReportModel to avoid Pydantic
+    attempting to parse elements without the discriminator helper.
     """
+    data = dict(data)  # shallow copy — do not mutate caller's dict
     bands_raw = data.pop("bands", [])
     report = ReportModel(**data)
     parsed_bands = []
     for band_raw in bands_raw:
+        band_raw = dict(band_raw)
         elements_raw = band_raw.pop("elements", [])
         band = ReportBand(**band_raw)
         band.elements = [parse_element(e) for e in elements_raw]
