@@ -1,5 +1,6 @@
-# report_engine/renderers/pdf_renderer.py
+# engine/renderers/pdf_renderer.py
 # Core rendering engine: ReportModel → PDF bytes via ReportLab canvas API.
+# v3.0 — Phase 8.0: _draw_table uses designer border/background settings.
 #
 # Rendering pipeline:
 #   1. ReportModel parsed and validated by Pydantic
@@ -12,9 +13,7 @@ from __future__ import annotations
 
 import io
 import urllib.request
-from typing import Any
-
-from typing import cast
+from typing import Any, cast
 
 from reportlab.pdfgen import canvas as rl_canvas
 from reportlab.lib.utils import ImageReader
@@ -72,7 +71,6 @@ class PDFRenderer:
         self._canvas = rl_canvas.Canvas(buf, pagesize=(page_w_pt, page_h_pt))
         self._canvas.setTitle(report.name)
 
-        # Accumulate band top-offsets as we iterate top-to-bottom
         margin_top_pt = px(report.margins.top)
         band_top_pt = margin_top_pt
 
@@ -91,14 +89,10 @@ class PDFRenderer:
     def _render_band(
         self, band: ReportBand, band_top_pt: float, report: ReportModel
     ) -> None:
-        """Render all elements in a single band."""
         margin_left_pt = px(report.margins.left)
-
         for element in band.elements:
-            # Element position is relative to band top-left
             el_x_pt = margin_left_pt + px(element.x)
             el_y_pt = band_top_pt + px(element.y)
-
             self._dispatch_element(element, el_x_pt, el_y_pt)
 
     # ─────────────────────────────────────────────
@@ -108,7 +102,6 @@ class PDFRenderer:
     def _dispatch_element(
         self, element: ReportElement, x_pt: float, y_pt: float
     ) -> None:
-        """Route element to its draw method by type."""
         if isinstance(element, StaticTextElement):
             self._draw_static_text(element, x_pt, y_pt)
         elif isinstance(element, RectangleElement):
@@ -139,11 +132,8 @@ class PDFRenderer:
 
         if has_fill:
             c.setFillColorRGB(*cast(tuple[float, float, float], fill_color))
-
         if has_stroke:
             c.setStrokeColorRGB(*cast(tuple[float, float, float], stroke_color))
-            c.setLineWidth(px(el.style.borderWidth))
-            self._apply_dash(el.style.borderStyle)
             c.setLineWidth(px(el.style.borderWidth))
             self._apply_dash(el.style.borderStyle)
 
@@ -171,7 +161,6 @@ class PDFRenderer:
                 stroke=1 if has_stroke else 0,
             )
 
-        # Reset alpha
         c.setFillAlpha(1)
         c.setStrokeAlpha(1)
 
@@ -200,7 +189,6 @@ class PDFRenderer:
             rl_y = flip_y(self._page_height_pt, y_pt, h_pt)
             c.line(x_pt, rl_y + h_pt, x_pt + w_pt, rl_y)
 
-        # Reset dash
         c.setDash()
 
     # ─────────────────────────────────────────────
@@ -245,7 +233,6 @@ class PDFRenderer:
         h_pt = px(el.height)
         rl_y = flip_y(self._page_height_pt, y_pt, h_pt)
 
-        # Resolve src — may be a data path, URL, or base64
         src = el.src
         if not src.startswith(("http", "data:", "/")):
             resolved = resolve_data_path(self._data, src)
@@ -270,7 +257,6 @@ class PDFRenderer:
                 mask="auto",
             )
         except Exception as e:
-            # Draw a placeholder box with an X on failure
             self._draw_image_placeholder(x_pt, rl_y, w_pt, h_pt, str(e))
 
     # ─────────────────────────────────────────────
@@ -278,61 +264,99 @@ class PDFRenderer:
     # ─────────────────────────────────────────────
 
     def _draw_table(self, el: TableElement, x_pt: float, y_pt: float) -> None:
+        """
+        Render a table element using the designer's border/background settings.
+
+        Designer controls used:
+          el.headerBackground  — header row fill colour
+          el.rowBackground     — data row fill colour (if not transparent)
+          el.altRowBackground  — alternate row fill colour for zebra striping
+          el.showBorder        — whether to draw cell borders at all
+          el.borderColor       — cell border colour (replaces hardcoded #E0E0E0)
+          el.borderWidth       — cell border width in canvas-px
+          el.headerStyle       — full TextStyle for header cells
+          el.rowStyle          — full TextStyle for data cells
+        """
         c = self.canvas
 
-        # Resolve row data from the data context
         rows_data = resolve_data_path(self._data, el.dataField)
         rows: list[dict] = rows_data if isinstance(rows_data, list) else []
-        if not isinstance(rows, list):
-            rows = []
 
         header_h_pt = px(el.headerHeight) if el.showHeader else 0
         row_h_pt = px(el.rowHeight)
-        cursor_y_pt = y_pt  # top-left, will advance downward
+        cursor_y_pt = y_pt  # top-left origin, advances downward
+        table_w_pt = px(el.width)
 
-        # ── Header row ──
+        # ── Resolve border settings ───────────────────────────────────────
+        border_color = parse_color(el.borderColor) if el.showBorder else None
+        border_width = px(el.borderWidth) if el.showBorder else 0
+
+        # ── Header row ────────────────────────────────────────────────────
         if el.showHeader:
-            col_x = x_pt
-            # Header background — use the font color's dark base as bg
-            # (we use the dark brand color #1A1A2E from the style)
-            c.setFillColorRGB(0.102, 0.102, 0.18)  # #1A1A2E
-            c.setStrokeAlpha(0)
-            header_rl_y = flip_y(self._page_height_pt, cursor_y_pt, header_h_pt)
-            c.rect(x_pt, header_rl_y, px(el.width), header_h_pt, fill=1, stroke=0)
-            c.setStrokeAlpha(1)
+            header_bg = parse_color(el.headerBackground)
+            if header_bg:
+                header_rl_y = flip_y(self._page_height_pt, cursor_y_pt, header_h_pt)
+                c.setFillColorRGB(*header_bg)
+                c.setStrokeAlpha(0)
+                c.rect(x_pt, header_rl_y, table_w_pt, header_h_pt, fill=1, stroke=0)
+                c.setStrokeAlpha(1)
 
+            # Draw bottom border under the header
+            if border_color:
+                c.setStrokeColorRGB(*border_color)
+                c.setLineWidth(border_width)
+                header_rl_y = flip_y(self._page_height_pt, cursor_y_pt, header_h_pt)
+                c.line(x_pt, header_rl_y, x_pt + table_w_pt, header_rl_y)
+
+            col_x = x_pt
             for col in el.columns:
                 col_w_pt = px(col.width)
                 self._draw_text_in_box(
                     text=col.label,
                     text_style=el.headerStyle,
-                    x_pt=col_x + px(6),  # inner padding
+                    x_pt=col_x + px(6),
                     y_pt=cursor_y_pt,
                     w_pt=col_w_pt - px(12),
                     h_pt=header_h_pt,
                     h_align_override=col.align,
                 )
+                # Right border between header cells
+                if border_color:
+                    c.setStrokeColorRGB(*border_color)
+                    c.setLineWidth(border_width)
+                    cell_rl_y = flip_y(self._page_height_pt, cursor_y_pt, header_h_pt)
+                    c.line(
+                        col_x + col_w_pt,
+                        cell_rl_y,
+                        col_x + col_w_pt,
+                        cell_rl_y + header_h_pt,
+                    )
                 col_x += col_w_pt
 
             cursor_y_pt += header_h_pt
 
-        # ── Data rows ──
+        # ── Data rows ─────────────────────────────────────────────────────
         for row_idx, row in enumerate(rows):
             row_rl_y = flip_y(self._page_height_pt, cursor_y_pt, row_h_pt)
 
-            # Zebra striping
-            if el.altRowColor and row_idx % 2 == 1:
-                alt = parse_color(el.altRowColor)
-                if alt:
-                    c.setFillColorRGB(*alt)
-                    c.setStrokeAlpha(0)
-                    c.rect(x_pt, row_rl_y, px(el.width), row_h_pt, fill=1, stroke=0)
-                    c.setStrokeAlpha(1)
+            # Row background fill
+            is_alt_row = row_idx % 2 == 1
+            if is_alt_row and el.altRowBackground:
+                row_bg = parse_color(el.altRowBackground)
+            else:
+                row_bg = parse_color(el.rowBackground)
+
+            if row_bg:
+                c.setFillColorRGB(*row_bg)
+                c.setStrokeAlpha(0)
+                c.rect(x_pt, row_rl_y, table_w_pt, row_h_pt, fill=1, stroke=0)
+                c.setStrokeAlpha(1)
 
             # Row bottom border
-            c.setStrokeColorRGB(0.878, 0.878, 0.878)  # #E0E0E0
-            c.setLineWidth(0.5)
-            c.line(x_pt, row_rl_y, x_pt + px(el.width), row_rl_y)
+            if border_color:
+                c.setStrokeColorRGB(*border_color)
+                c.setLineWidth(border_width)
+                c.line(x_pt, row_rl_y, x_pt + table_w_pt, row_rl_y)
 
             # Cells
             col_x = x_pt
@@ -349,9 +373,27 @@ class PDFRenderer:
                     h_pt=row_h_pt,
                     h_align_override=col.align,
                 )
+                # Right border between cells
+                if border_color:
+                    c.setStrokeColorRGB(*border_color)
+                    c.setLineWidth(border_width)
+                    c.line(
+                        col_x + col_w_pt,
+                        row_rl_y,
+                        col_x + col_w_pt,
+                        row_rl_y + row_h_pt,
+                    )
                 col_x += col_w_pt
 
             cursor_y_pt += row_h_pt
+
+        # ── Outer table border ────────────────────────────────────────────
+        if border_color:
+            total_h_pt = header_h_pt + row_h_pt * len(rows)
+            outer_rl_y = flip_y(self._page_height_pt, y_pt, total_h_pt)
+            c.setStrokeColorRGB(*border_color)
+            c.setLineWidth(border_width)
+            c.rect(x_pt, outer_rl_y, table_w_pt, total_h_pt, fill=0, stroke=1)
 
     # ─────────────────────────────────────────────
     # SHARED TEXT DRAWING HELPER
@@ -367,10 +409,6 @@ class PDFRenderer:
         h_pt: float,
         h_align_override: str | None = None,
     ) -> None:
-        """
-        Draw a string clipped inside a bounding box, respecting
-        horizontal and vertical alignment.
-        """
         c = self.canvas
         if not text:
             return
@@ -386,8 +424,7 @@ class PDFRenderer:
         c.setFont(font_name, font_size)
         c.setFillColorRGB(*color)
 
-        # Vertical alignment: compute text baseline
-        ascent = font_size * 0.8  # approximate cap height
+        ascent = font_size * 0.8
         if v_align == "top":
             text_y_in_box = h_pt - ascent - px(2)
         elif v_align == "bottom":
@@ -397,7 +434,6 @@ class PDFRenderer:
 
         rl_y = flip_y(self._page_height_pt, y_pt, h_pt) + text_y_in_box
 
-        # Horizontal alignment
         if h_align == "right":
             c.drawRightString(x_pt + w_pt, rl_y, text)
         elif h_align == "center":
@@ -405,7 +441,6 @@ class PDFRenderer:
         else:
             c.drawString(x_pt, rl_y, text)
 
-        # Underline
         if text_style.underline:
             text_width = c.stringWidth(text, font_name, font_size)
             ul_y = rl_y - px(1)
