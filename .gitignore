@@ -14,5 +14,14 @@ __pycache__/
 *.json
 *.log
 
+*.sqlite3
+
 # System
 .DS_Store
+
+migrations/
+# Ignore all migrations
+*/migrations/*.py
+!*/migrations/__init__.py
+
+*/migrations/__pycache__/
