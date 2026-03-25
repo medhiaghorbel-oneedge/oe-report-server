@@ -41,3 +41,6 @@ urlpatterns += [
 urlpatterns += [
     path("api/", include("apps.reports.urls")),
 ]
+
+
+urlpatterns += [path("api/", include("apps.renderer.urls"))]
