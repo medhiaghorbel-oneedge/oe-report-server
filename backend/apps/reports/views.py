@@ -53,6 +53,53 @@ class ReportViewSet(viewsets.ModelViewSet):
         instance.is_archived = True
         instance.save()
 
+    @action(detail=False, methods=["post"], url_path="save")
+    def save(self, request):
+        """
+        Upsert a report by its frontend-generated id.
+        - If the id doesn't exist → create it.
+        - If it exists and belongs to this user → update definition + name.
+        POST /api/reports/save/
+        Body: full ReportModel JSON from the Angular serialiser.
+        """
+
+        payload = request.data
+        report_id = payload.get("id")
+
+        if not report_id:
+            return Response(
+                {"detail": "Report payload must include an 'id' field."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        user = request.user
+        if settings.DISABLE_AUTH:
+            from django.contrib.auth import get_user_model
+
+            user = get_user_model().objects.first()
+
+        report, created = Report.objects.get_or_create(
+            id=report_id,
+            defaults={
+                "owner": user,
+                "name": payload.get("name", "Untitled"),
+                "definition": payload,
+            },
+        )
+
+        if not created:
+            # Ownership check — even in non-DISABLE_AUTH mode
+            if not settings.DISABLE_AUTH and report.owner != user:
+                return Response(
+                    {"detail": "Not found."},
+                    status=status.HTTP_404_NOT_FOUND,
+                )
+            report.name = payload.get("name", report.name)
+            report.definition = payload
+            report.save()
+
+        return Response({"id": str(report.id), "saved": True})
+
     @action(detail=True, methods=["get"])
     def versions(self, request, pk=None):
         report = self.get_object()

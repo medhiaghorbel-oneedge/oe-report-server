@@ -117,20 +117,45 @@ def job_status(request, job_id):
 # ── GET /api/renderer/download/{job_id}/ ──────────────────────────────────────
 
 
+from django.http import FileResponse
+import os
+
+
+# TODO FIX IT BROKEN PDF
 @api_view(["GET"])
 @permission_classes([IsAuthenticatedOrDevDisabled])
-def download(request, job_id):
-    """
-    Download the generated PDF for a completed job.
-    """
-
+def download(request, report_id):
     owner = get_dev_user(request)
 
-    job = get_object_or_404(PDFJob, id=job_id, owner=owner, status=PDFJob.Status.DONE)
-    job.pdf_file.open("rb")
+    job = (
+        PDFJob.objects.filter(
+            report_id=report_id,
+            owner=owner,
+            status=PDFJob.Status.DONE,
+        )
+        .order_by("-created_at")
+        .first()
+    )
+
+    print(job)
+
+    if not job or not job.pdf_file:
+        return Response(
+            {"detail": "No completed PDF found for this report."},
+            status=status.HTTP_404_NOT_FOUND,
+        )
+
+    file_path = job.pdf_file.path  # 🔥 IMPORTANT
+
+    if not os.path.exists(file_path):
+        return Response(
+            {"detail": "File not found on disk."},
+            status=status.HTTP_404_NOT_FOUND,
+        )
+
     return FileResponse(
-        job.pdf_file,
+        open(file_path, "rb"),  # ✅ real file stream
         content_type="application/pdf",
         as_attachment=True,
-        filename=job.pdf_file.name.split("/")[-1],
+        filename=os.path.basename(file_path),
     )
