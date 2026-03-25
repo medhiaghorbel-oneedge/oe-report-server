@@ -9,4 +9,5 @@ urlpatterns = [
     path("register/", RegisterView.as_view(), name="auth_register"),
     path("login/", TokenObtainPairView.as_view(), name="token_obtain_pair"),
     path("refresh/", TokenRefreshView.as_view(), name="token_refresh"),
+    # TODO path("me/", me, name="auth_me"),
 ]

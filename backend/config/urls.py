@@ -35,3 +35,12 @@ urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 urlpatterns += [
     path("api/auth/", include("apps.users.urls")),
 ]
+
+# * reports
+
+urlpatterns += [
+    path("api/", include("apps.reports.urls")),
+]
+
+
+urlpatterns += [path("api/", include("apps.renderer.urls"))]

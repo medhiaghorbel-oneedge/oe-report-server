@@ -1,0 +1,3 @@
+Get-ChildItem -Path ./core/*/migrations/0*_*.py -Recurse | Remove-Item -Force
+python manage.py makemigrations
+python manage.py migrate
