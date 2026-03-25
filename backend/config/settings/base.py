@@ -33,6 +33,8 @@ SECRET_KEY = env("SECRET_KEY")
 DEBUG = env("DEBUG")
 
 
+DISABLE_AUTH = env.bool("DISABLE_AUTH", default=False)
+
 ALLOWED_HOSTS = []
 
 
