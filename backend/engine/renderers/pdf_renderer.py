@@ -71,8 +71,7 @@ class PDFRenderer:
         self._canvas = rl_canvas.Canvas(buf, pagesize=(page_w_pt, page_h_pt))
         self._canvas.setTitle(report.name)
 
-        margin_top_pt = px(report.margins.top)
-        band_top_pt = margin_top_pt
+        band_top_pt = 0.0
 
         for band in report.bands:
             self._render_band(band, band_top_pt, report)
@@ -89,9 +88,8 @@ class PDFRenderer:
     def _render_band(
         self, band: ReportBand, band_top_pt: float, report: ReportModel
     ) -> None:
-        margin_left_pt = px(report.margins.left)
         for element in band.elements:
-            el_x_pt = margin_left_pt + px(element.x)
+            el_x_pt = px(element.x)
             el_y_pt = band_top_pt + px(element.y)
             self._dispatch_element(element, el_x_pt, el_y_pt)
 

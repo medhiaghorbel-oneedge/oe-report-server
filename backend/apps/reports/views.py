@@ -5,6 +5,7 @@ from rest_framework.response import Response
 from .models import Report, ReportVersion
 from .serializers import ReportSerializer, ReportVersionSerializer
 from rest_framework.permissions import AllowAny, IsAuthenticated
+import uuid
 
 
 class ReportViewSet(viewsets.ModelViewSet):
@@ -56,9 +57,9 @@ class ReportViewSet(viewsets.ModelViewSet):
     @action(detail=False, methods=["post"], url_path="save")
     def save(self, request):
         """
-        Upsert a report by its frontend-generated id.
-        - If the id doesn't exist → create it.
-        - If it exists and belongs to this user → update definition + name.
+        Upsert a report by its frontend-generated UUID.
+        - If the UUID exists and belongs to user → update it
+        - If the UUID doesn't exist → create new with that UUID
         POST /api/reports/save/
         Body: full ReportModel JSON from the Angular serialiser.
         """
@@ -72,33 +73,54 @@ class ReportViewSet(viewsets.ModelViewSet):
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
+        # Validate UUID format
+        try:
+            uuid_obj = uuid.UUID(report_id)
+        except (ValueError, AttributeError, TypeError):
+            return Response(
+                {"detail": f"'{report_id}' is not a valid UUID format."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
         user = request.user
         if settings.DISABLE_AUTH:
             from django.contrib.auth import get_user_model
 
             user = get_user_model().objects.first()
 
-        report, created = Report.objects.get_or_create(
-            id=report_id,
-            defaults={
-                "owner": user,
-                "name": payload.get("name", "Untitled"),
-                "definition": payload,
-            },
-        )
+        # Try to get existing report
+        try:
+            report = Report.objects.get(id=report_id)
 
-        if not created:
-            # Ownership check — even in non-DISABLE_AUTH mode
+            # Ownership check for existing report
             if not settings.DISABLE_AUTH and report.owner != user:
                 return Response(
                     {"detail": "Not found."},
                     status=status.HTTP_404_NOT_FOUND,
                 )
+
+            # Update existing report
             report.name = payload.get("name", report.name)
             report.definition = payload
             report.save()
 
-        return Response({"id": str(report.id), "saved": True})
+            return Response({"id": str(report.id), "saved": True})
+
+        except Report.DoesNotExist:
+            # Create new report with the provided UUID
+            report = Report.objects.create(
+                id=report_id,
+                owner=user,
+                name=payload.get("name", "Untitled"),
+                definition=payload,
+            )
+
+            # Create initial version
+            ReportVersion.objects.create(
+                report=report, version=1, definition=report.definition
+            )
+
+            return Response({"id": str(report.id), "saved": True})
 
     @action(detail=True, methods=["get"])
     def versions(self, request, pk=None):
